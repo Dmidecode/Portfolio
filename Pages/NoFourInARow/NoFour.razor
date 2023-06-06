@@ -1,0 +1,76 @@
+﻿@page "/nofour"
+
+@inject NavigationManager UriHelper
+
+<Button Color="Color.Primary" Clicked="@(()=>OnThemeColorChanged("#d16f9e"))">Change theme</Button>
+
+<DifficultyNoFour />
+<br />
+<br />
+<ReglesNoFour />
+@*
+<DisplayHeading Size="DisplayHeadingSize.Is4" Margin="Margin.Is4.OnY">
+    No Four In A Row
+</DisplayHeading>
+<Row>
+    <Column ColumnSize="ColumnSize.Is4.OnTablet.Is3.OnWidescreen.Is12.OnMobile" >
+        <Card Margin="Margin.Is4.FromBottom">
+            <CardBody>
+                <Anchor To="nofour/rules" Class="display-products" TextColor="TextColor.Body">
+                    <Media>
+                        <MediaLeft>
+                            <Icon Name="IconName.Book" IconSize="IconSize.x3" Padding="Padding.Is3" />
+                        </MediaLeft>
+                        <MediaBody>
+                            <Heading Size="HeadingSize.Is5">Rules</Heading>
+                            <Paragraph>
+                                Read the rules before playing !
+                            </Paragraph>
+                        </MediaBody>
+                    </Media>
+                </Anchor>
+            </CardBody>
+        </Card>
+    </Column>   
+    <Column ColumnSize="ColumnSize.Is4.OnTablet.Is3.OnWidescreen.Is12.OnMobile">
+        <Card Margin="Margin.Is4.FromBottom">
+            <CardBody>
+                <Anchor To="nofour/difficulty" Class="display-products" TextColor="TextColor.Body">
+                    <Media>
+                        <MediaLeft>
+                            <Icon Name="IconName.Gamepad" IconSize="IconSize.x3" Padding="Padding.Is3" />
+                        </MediaLeft>
+                        <MediaBody>
+                            <Heading Size="HeadingSize.Is5">Play</Heading>
+                            <Paragraph>
+                                Make a puzzle
+                            </Paragraph>
+                        </MediaBody>
+                    </Media>
+                </Anchor>
+            </CardBody>
+        </Card>
+    </Column>
+</Row>*@
+
+@code {
+    void OnRulesClicked()
+    {
+        UriHelper.NavigateTo("/nofour/rules");
+    }
+
+    Task OnThemeColorChanged(string value)
+    {
+        if (Theme?.ColorOptions != null)
+            Theme.ColorOptions.Primary = value;
+
+        if (Theme?.BackgroundOptions != null)
+            Theme.BackgroundOptions.Primary = value;
+
+        Theme.ThemeHasChanged();
+
+        return Task.CompletedTask;
+    }
+
+    [CascadingParameter] Theme Theme { get; set; }
+}

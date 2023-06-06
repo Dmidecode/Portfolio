@@ -1,0 +1,51 @@
+﻿@page "/nofour/rules"
+<Heading Size="HeadingSize.Is2">Rules</Heading>
+
+<Row>
+    <Column ColumnSize="ColumnSize.Is6">
+        <Paragraph>
+            <i>No Four In a Row</i> is a puzzle game, despite the single rule. Some of the levels are quite difficult to resolve.
+        </Paragraph>
+        <br />
+        <Paragraph>
+            To resolve a puzzle, you must fill <b>ALL</b> the cells with only two characters: <b>X</b> and <b>O</b>.
+            <br />
+            The rule is: <i>it can't have 4 identicals symbols horizontally, vertically or diagonally in a row.</i>
+            <br />
+            The application will notify you if applicable.
+            <br />
+            Each level has only <b>1 solution</b> and can be completed without guessing.
+        </Paragraph>
+        <br />
+        <br />
+        <Paragraph>
+            <Heading Size="HeadingSize.Is2" TextAlignment="TextAlignment.Center">How to solve</Heading>
+            The following tips will guide you to solve any puzzle:
+            <UnorderedList>
+                <UnorderedListItem>
+                    <Text>
+                        If you see <b>3 identicals symbols</b> and an <b>empty cell</b>, then the <b>opposite symbol</b> must be in this empty cell
+                    </Text>
+                </UnorderedListItem>
+                <UnorderedListItem>
+                    <Text>
+                        If you see <b>2 identicals symbols</b>, an <b>empty cell</b> and a symbol <b>which match the first two ones</b>, then the <b>opposite symbol</b> must be in this empty cell
+                    </Text>
+                </UnorderedListItem>
+                <UnorderedListItem>
+                    <Text>
+                        Those 2 tips works horizontally, vertically or diagonally
+                    </Text>
+                </UnorderedListItem>
+            </UnorderedList>
+        </Paragraph>
+        <br />
+        <Paragraph>
+            With those simples tricks, you can solve any difficulty of this game.
+        </Paragraph>
+    </Column>
+</Row>
+
+@code {
+
+}

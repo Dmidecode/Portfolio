@@ -1,0 +1,255 @@
+﻿@inject HttpClient Http
+@inject IJSRuntime JSRuntime
+
+<Row onmousedown="return false" onselectstart="return false">
+    <Column ColumnSize="ColumnSize.Is6.Is5.WithOffset">
+        @for (int w = 0; w < Width; w += 1)
+        {
+            int wIndex = w;
+            <Row @oncontextmenu:preventDefault="true">
+                @for (int h = 0; h < Height; h += 1)
+                {
+                    int hIndex = h;
+                    <CellNoFour OnCallbackParent="@((args) => OnClickedCell(args.Item1, args.Item2))" OnCallbackParentRightClick="@((args) => OnClickedEraseCell(args.Item1, args.Item2))" X="wIndex" Y="hIndex" IsInError="Cells[hIndex, wIndex].IsInError" Status="Cells[hIndex, wIndex].Status" />
+                }
+            </Row>
+        }
+    </Column>
+</Row>
+<Button title="Save" Clicked="SaveGrid">Save</Button>
+<Button title="Download" Clicked="DownloadFile">Download</Button>
+<Button title="Read" Clicked="ReadFile">Read</Button>
+<Button title="Reset" Clicked="ResetGrid">Reset</Button>
+<br />
+<Row>
+    @if (fileConfig == null)
+    {
+        <p><em>Loading...</em></p>
+    }
+    else
+    {
+        <Text>Width config: @fileConfig.Width</Text>
+        <Text>Height config: @fileConfig.Height</Text>
+        <Text>Nombre de grilles: @fileConfig.Grids.Count</Text>
+        <Text>Difficulty: @Difficulty.GetDifficultyPath()</Text>
+    }
+</Row>
+
+@code {
+    [Parameter]
+    public int Width { get; set; }
+
+    [Parameter]
+    public int Height { get; set; }
+
+    [Parameter]
+    public Difficulty Difficulty { get; set; }
+
+    private int _width;
+    private int _height;
+
+    CellModel[,] Cells;
+
+    string content;
+    string fileName = "test.json";
+    FileConfigNoFourInARow fileConfig;
+
+    async Task SaveGrid()
+    {
+        GameData newGrid = new();
+        newGrid.Index = fileConfig.Grids.Count + 1;
+
+        foreach (CellModel cell in Cells)
+            newGrid.Grid.Add((int)cell.Status);
+
+        fileConfig.Grids.Add(newGrid);
+
+        ResetGrid();
+    }
+
+    public async Task DownloadFile()
+    {
+        content = System.Text.Json.JsonSerializer.Serialize(fileConfig);
+        await JSRuntime.InvokeAsync<object>("saveFile", fileName, content);
+    }
+
+    public async Task ReadFile()
+    {
+        GameData game = fileConfig.Grids[0];
+
+        for (int y = 0; y < fileConfig.Height; y += 1)
+        {
+            var line = game.Grid.Skip(y * fileConfig.Width).Take(fileConfig.Width);
+            int x = 0;
+            foreach (var item in line)
+            {
+                Cells[y, x] = new CellModel() { Status = (StatusCell)item };
+                x += 1;
+            }
+        }
+    }
+
+    void ResetGrid()
+    {
+        for (int y = 0; y < Height; y += 1)
+        {
+            for (int x = 0; x < Width; x += 1)
+            {
+                Cells[y, x].Status = StatusCell.Empty;
+                Cells[y, x].IsInError = false;
+            }
+        }
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        _width = Width;
+        _height = Height;
+        Cells = new CellModel[_height, _width];
+        for (var i = 0; i < _height * _width; i++)
+        {
+            Cells[i / _width, i % _width] = new CellModel();
+        }
+
+        string resFile = $"nofourinarow/{Difficulty.GetDifficultyPath()}/grids.json";
+        fileConfig = await Http.GetFromJsonAsync<FileConfigNoFourInARow>(resFile);
+    }
+
+    protected override void OnParametersSet()
+    {
+        if (_width != Width)
+        {
+            _width = Width;
+            _height = Height;
+            Cells = new CellModel[_height, _width];
+            for (var i = 0; i < _height * _width; i++)
+            {
+                Cells[i / _width, i % _width] = new CellModel();
+            }
+        }
+    }
+
+    Task OnClickedEraseCell(int x, int y)
+    {
+        CellModel cell = Cells[y, x];
+        cell.Status = StatusCell.Empty;
+        CheckGridInError();
+        return Task.CompletedTask;
+    }
+
+    Task OnClickedCell(int x, int y)
+    {
+        CellModel cell = Cells[y, x];
+        if (cell.Status == StatusCell.Cross)
+            cell.Status = StatusCell.Circle;
+        else
+            cell.Status = StatusCell.Cross;
+
+        CheckGridInError();
+        return Task.CompletedTask;
+    }
+
+    void CheckGridInError()
+    {
+        ResetErrorGrid();
+        for (int y = 0; y < Height; y += 1)
+        {
+            for (int x = 0; x < Width; x += 1)
+            {
+                if (Cells[y, x].Status == StatusCell.Empty)
+                    continue;
+                CheckVertical(y, x);
+                CheckHorizontal(y, x);
+                CheckDiagonalRight(y, x);
+                CheckDiagonalLeft(y, x);
+            }
+        }
+    }
+
+    void ResetErrorGrid()
+    {
+        for (int y = 0; y < Height; y += 1)
+        {
+            for (int x = 0; x < Width; x += 1)
+            {
+                Cells[y, x].IsInError = false;
+            }
+        }
+    }
+
+    void CheckDiagonalLeft(int y, int x)
+    {
+        if (y - 3 < 0 || x + 3 > Width)
+            return;
+
+        CellModel startCell = Cells[y, x];
+        StatusCell startStatusCell = startCell.Status;
+        for (int yParcours = y - 1, xParcours = x + 1; yParcours > y - 4 && xParcours < x + 4; yParcours -= 1, xParcours += 1)
+        {
+            if (yParcours <= 0 || xParcours >= Width || Cells[yParcours, xParcours].Status != startStatusCell)
+                return;
+        }
+
+        for (int yParcours = y, xParcours = x; yParcours > y - 4 && xParcours < x + 4; yParcours -= 1, xParcours += 1)
+        {
+            Cells[yParcours, xParcours].IsInError = true;
+        }
+    }
+
+    void CheckDiagonalRight(int y, int x)
+    {
+        if (y + 3 > Height || x + 3 > Width)
+            return;
+
+        CellModel startCell = Cells[y, x];
+        StatusCell startStatusCell = startCell.Status;
+        for (int yParcours = y + 1, xParcours = x + 1; yParcours < y + 4 && xParcours < x + 4; yParcours += 1, xParcours += 1)
+        {
+            if (yParcours >= Height || xParcours >= Width || Cells[yParcours, xParcours].Status != startStatusCell)
+                return;
+        }
+
+        for (int yParcours = y, xParcours = x; yParcours < y + 4 && xParcours < x + 4; yParcours += 1, xParcours += 1)
+        {
+            Cells[yParcours, xParcours].IsInError = true;
+        }
+    }
+
+    void CheckHorizontal(int y, int x)
+    {
+        if (y + 3 > Height)
+            return;
+
+        CellModel startCell = Cells[y, x];
+        StatusCell startStatusCell = startCell.Status;
+        for (int yParcours = y + 1; yParcours < y + 4; yParcours += 1)
+        {
+            if (yParcours >= Height || Cells[yParcours, x].Status != startStatusCell)
+                return;
+        }
+
+        for (int yParcours = y; yParcours < y + 4; yParcours += 1)
+        {
+            Cells[yParcours, x].IsInError = true;
+        }
+    }
+
+    void CheckVertical(int y, int x)
+    {
+        if (x + 3 > Width)
+            return;
+
+        CellModel startCell = Cells[y, x];
+        StatusCell startStatusCell = startCell.Status;
+        for (int xParcours = x + 1; xParcours < x + 4; xParcours += 1)
+        {
+            if (xParcours >= Width || Cells[y, xParcours].Status != startStatusCell)
+                return;
+        }
+
+        for (int xParcours = x; xParcours < x + 4; xParcours += 1)
+        {
+            Cells[y, xParcours].IsInError = true;
+        }
+    }
+}

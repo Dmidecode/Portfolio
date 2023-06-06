@@ -1,0 +1,65 @@
+﻿<div class="top-row ps-3 navbar navbar-dark">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="">Portfolio</a>
+        <button title="Navigation menu" class="navbar-toggler" @onclick="ToggleNavMenu">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+    </div>
+</div>
+
+<div class="@NavMenuCssClass" @onclick="ToggleNavMenu">
+    <nav class="flex-column">
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
+                <Span>
+                    <Icon Name="IconName.Home" Margin="Margin.Is3.FromEnd" />
+                    Home
+                </Span>
+            </NavLink>
+        </div>
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="counter">
+                <Span>
+                    <Icon Name="IconName.Add" Margin="Margin.Is3.FromEnd" />
+                    Counter
+                </Span>
+
+            </NavLink>
+        </div>
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="fetchdata">
+                <Span>
+                    <Icon Name="IconName.Book" Margin="Margin.Is3.FromEnd" />
+                    Fetch Data
+                </Span>
+            </NavLink>
+        </div>
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="nofour" Match="NavLinkMatch.Prefix">
+                <Span>
+                    <Icon Name="IconName.DotCircle" Margin="Margin.Is3.FromEnd" />
+                    No Four In Row
+                </Span>
+            </NavLink>
+        </div>
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="nofour/create">
+                <Span>
+                    <Icon Name="IconName.DotCircle" Margin="Margin.Is3.FromEnd" />
+                    Create No Four In Row
+                </Span>
+            </NavLink>
+        </div>
+    </nav>
+</div>
+
+@code {
+    private bool collapseNavMenu = true;
+
+    private string? NavMenuCssClass => collapseNavMenu ? "collapse" : null;
+
+    private void ToggleNavMenu()
+    {
+        collapseNavMenu = !collapseNavMenu;
+    }
+}

@@ -1,0 +1,68 @@
+﻿@page "/nofour/create"
+@using Portfolio.Models;
+﻿
+<Row>
+    <Column ColumnSize="ColumnSize.Is2">
+        <Select TValue="int" SelectedValue="@selectedDifficulty" SelectedValueChanged="@OnSelectedValueChanged">
+            <SelectItem Value="1">Novice</SelectItem>
+            <SelectItem Value="2">Easy</SelectItem>
+            <SelectItem Value="3">Standard</SelectItem>
+            <SelectItem Value="4">Hard</SelectItem>
+            <SelectItem Value="5">Advanced</SelectItem>
+            <SelectItem Value="6">Expert</SelectItem>
+        </Select>
+    </Column>
+</Row>
+
+<br />
+<Row>
+    <Column>
+        <Text>Width: @Width - Height: @Height</Text>
+    </Column>
+</Row>
+
+<br />
+<br />
+<GridNoFour Width="Width" Height="Height" Difficulty="@((Difficulty)selectedDifficulty)" />
+
+@code {
+    int selectedDifficulty;
+    int Width = 6;
+    int Height = 6;
+
+    Task OnSelectedValueChanged(int value)
+    {
+        selectedDifficulty = value;
+        Console.WriteLine(selectedDifficulty);
+
+        switch (value)
+        {
+            case 1:
+                Width = 6;
+                Height = 6;
+                break;
+            case 2:
+                Width = 7;
+                Height = 7;
+                break;
+            case 3:
+                Width = 7;
+                Height = 9;
+                break;
+            case 4:
+                Width = 8;
+                Height = 9;
+                break;
+            case 5:
+                Width = 9;
+                Height = 10;
+                break;
+            case 6:
+                Width = 10;
+                Height = 10;
+                break;
+        }
+
+        return Task.CompletedTask;
+    }
+}
