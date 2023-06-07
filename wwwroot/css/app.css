@@ -72,3 +72,11 @@ a, .btn-link {
 .cell-error {
     background: #fc9e97 !important;
 }
+
+.breadcrumb-custom {
+    background-color: white;
+}
+
+.card-base:hover {
+    background-color: yellow !important;
+}

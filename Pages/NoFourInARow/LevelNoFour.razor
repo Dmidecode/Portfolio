@@ -1,0 +1,131 @@
+﻿@page "/nofour/level/{difficultyParameter:int}"
+@inject HttpClient Http
+@inject ILocalStorageService _localstorage;
+
+<Row>
+    <Column>
+        <Breadcrumb Class="breadcrumb-custom">
+            <BreadcrumbItem>
+                <BreadcrumbLink To="/nofour/difficulty">Difficulty</BreadcrumbLink>
+            </BreadcrumbItem>
+            <BreadcrumbItem Active>
+                <BreadcrumbLink To="#">Level</BreadcrumbLink>
+            </BreadcrumbItem>
+        </Breadcrumb>
+    </Column>
+</Row>
+
+<Row>
+    <Column ColumnSize="ColumnSize.Is3">
+        <Heading Size="HeadingSize.Is2">Choose your level</Heading>
+    </Column>
+    <Column ColumnSize="ColumnSize.Is2.Is7.WithOffset">
+        <Button Color="Color.Danger" Size="Size.Small" Clicked="EraseProgress">Erase your progress</Button>
+    </Column>
+</Row>
+
+<br />
+<Row>
+    @if (fileConfig == null)
+    {
+        <Div Display="Display.InlineBlock">
+            <SpinKit Type="SpinKitType.Chase" />
+        </Div>
+    }
+    else
+    {
+        @foreach (var grid in fileConfig.Grids)
+        {
+            <Column ColumnSize="ColumnSize.Is4.OnMobile.Is1.OnTablet">
+                <Card Margin="Margin.Is4.FromBottom" Background="GetCssIsDone(grid)">
+                    <CardBody TextAlignment="TextAlignment.Center">
+                        <Anchor To="@GetUrlGame(grid.Index)" Class="display-products" TextColor="TextColor.Body">
+                            <Media>
+                                <MediaBody Style="@GetTextColor(grid)">
+                                    <Heading Size="HeadingSize.Is4">@grid.Index</Heading>
+                                    @*@if (grid.Seconds > 0)*@
+                                    @*{*@
+                                    <Text>@($"{grid.Seconds / 60:00}:{grid.Seconds % 60:00}")</Text>
+                                        @*}*@
+                                    </MediaBody>
+                                </Media>
+                            </Anchor>
+                        </CardBody>
+                    </Card>
+                </Column>
+        }
+    }
+</Row>
+<Snackbar @ref="snackbar" Color="SnackbarColor.Danger">
+    <SnackbarBody>
+        Your progress has been erased
+    </SnackbarBody>
+</Snackbar>
+
+@code {
+    [Parameter]
+    public int DifficultyParameter { get; set; }
+
+    Difficulty Difficulty;
+    FileConfigNoFourInARow fileConfig;
+
+    Snackbar snackbar;
+
+    async Task EraseProgress()
+    {
+        await _localstorage.RemoveItemAsync($"grid{Difficulty.GetDifficultyPath()}");
+        await snackbar.Show();
+        await LoadSave();
+    }
+
+    string GetTextColor(GameData data)
+    {
+        return data.Done ? "color: white;" : string.Empty;
+    }
+
+    string GetUrlGame(int index)
+    {
+        return $"/nofour/game/{(int)Difficulty}/{index}";
+    }
+
+    Background GetCssIsDone(GameData data)
+    {
+        return data.Done ? Background.Success : Background.Light;
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await LoadSave();
+            StateHasChanged();
+        }
+    }
+
+    async Task LoadSave()
+    {
+        string resFile = $"nofourinarow/{Difficulty.GetDifficultyPath()}/grids.json";
+        fileConfig = await Http.GetFromJsonAsync<FileConfigNoFourInARow>(resFile);
+
+        GridsDoneStorage gridsStorage = await _localstorage.GetItemAsync<GridsDoneStorage>($"grid{Difficulty.GetDifficultyPath()}");
+
+        if (gridsStorage == null)
+            return;
+
+        foreach (var item in fileConfig.Grids)
+        {
+            var gridStorage = gridsStorage.Grids.FirstOrDefault(x => x.Index == item.Index);
+            if (gridStorage == null)
+                continue;
+
+            item.Done = true;
+            item.Seconds = gridStorage.Seconds;
+        }
+    }
+
+    protected override void OnParametersSet()
+    {
+        Difficulty = (Difficulty)DifficultyParameter;
+    }
+
+}

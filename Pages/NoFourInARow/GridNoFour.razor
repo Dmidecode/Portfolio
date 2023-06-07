@@ -10,7 +10,7 @@
                 @for (int h = 0; h < Height; h += 1)
                 {
                     int hIndex = h;
-                    <CellNoFour OnCallbackParent="@((args) => OnClickedCell(args.Item1, args.Item2))" OnCallbackParentRightClick="@((args) => OnClickedEraseCell(args.Item1, args.Item2))" X="wIndex" Y="hIndex" IsInError="Cells[hIndex, wIndex].IsInError" Status="Cells[hIndex, wIndex].Status" />
+                    <CellNoFour OnCallbackParent="@((args) => OnClickedCell(args.Item1, args.Item2))" OnCallbackParentMiddleCLick="@((args) => OnMiddleClickedCell(args.Item1, args.Item2))" OnCallbackParentRightClick="@((args) => OnClickedEraseCell(args.Item1, args.Item2))" X="wIndex" Y="hIndex" IsInError="Cells[hIndex, wIndex].IsInError" Status="Cells[hIndex, wIndex].Status" />
                 }
             </Row>
         }
@@ -111,7 +111,7 @@
             Cells[i / _width, i % _width] = new CellModel();
         }
 
-        string resFile = $"nofourinarow/{Difficulty.GetDifficultyPath()}/grids.json";
+        string resFile = $"nofourinarow/easy/grids.json";
         fileConfig = await Http.GetFromJsonAsync<FileConfigNoFourInARow>(resFile);
     }
 
@@ -137,13 +137,25 @@
         return Task.CompletedTask;
     }
 
+    Task OnMiddleClickedCell(int x, int y)
+    {
+        CellModel cell = Cells[y, x];
+        if (cell.Status == StatusCell.Circle)
+            return Task.CompletedTask;
+
+        cell.Status = StatusCell.Circle;
+
+        CheckGridInError();
+        return Task.CompletedTask;
+    }
+
     Task OnClickedCell(int x, int y)
     {
         CellModel cell = Cells[y, x];
         if (cell.Status == StatusCell.Cross)
-            cell.Status = StatusCell.Circle;
-        else
-            cell.Status = StatusCell.Cross;
+            return Task.CompletedTask;
+
+        cell.Status = StatusCell.Cross;
 
         CheckGridInError();
         return Task.CompletedTask;

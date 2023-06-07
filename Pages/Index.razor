@@ -4,6 +4,7 @@
 <Heading Size="HeadingSize.Is2" Margin="Margin.Is4.OnY">
     Welcome to my experiments
 </Heading>
+@*<Button Color="Color.Primary" Clicked="@(()=>OnThemeColorChanged("#d16f9e"))">Change theme</Button>*@
 
 <Row>
     <Column ColumnSize="ColumnSize.Is4.OnTablet.Is3.OnWidescreen.Is12.OnMobile" Flex="Flex.AlignItems.Stretch">
@@ -26,3 +27,21 @@
         </Card>
     </Column>
 </Row>
+
+@code {
+    Task OnThemeColorChanged(string value)
+    {
+        if (Theme?.ColorOptions != null)
+            Theme.ColorOptions.Primary = value;
+
+        if (Theme?.BackgroundOptions != null)
+            Theme.BackgroundOptions.Primary = value;
+
+        Theme.ThemeHasChanged();
+
+        return Task.CompletedTask;
+    }
+
+    [CascadingParameter] Theme Theme { get; set; 
+}
+                            }

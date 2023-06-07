@@ -1,4 +1,4 @@
-﻿<Card @onclick="(() => OnClickedCell())" Class="@classCss" Style="@cardCss" @oncontextmenu="(() => HandleRightClick())">
+﻿<Card @onclick="OnClickedCell" Class="@GetCssCell()" Style="@cardCss" @oncontextmenu="(() => HandleRightClick())" @onmouseup="OnClickedCell">
     @if (Status > StatusCell.Empty)
     {
         <Image Source="@currentIcon" Style="width: 30px; height: 30px;" />
@@ -10,12 +10,16 @@
     const int widthCss = 50;
     const int heightCss = 50;
     string cardCss = $"background-color: #f7f9fc;border: 1px solid #000000; width: {widthCss}px; height: {heightCss}px; padding-left: 9px !important; padding-top: 9px;";
+    string hoverClassCss = "card-base";
 
     const string circleIcon = "images/Circle.png";
     const string crossIcon = "images/Cross.png";
     string currentIcon;
 
     string classCss = "display-products";
+
+    [Parameter]
+    public EventCallback<(int, int)> OnCallbackParentMiddleCLick { get; set; }
 
     [Parameter]
     public EventCallback<(int, int)> OnCallbackParent { get; set; }
@@ -30,6 +34,9 @@
     public int Y { get; set; }
 
     [Parameter]
+    public bool IsBase { get; set; }
+
+    [Parameter]
     public bool IsInError { get; set; }
 
     [Parameter]
@@ -38,15 +45,25 @@
     private bool _isInError;
     private StatusCell _status;
 
-    async Task HandleRightClick()
+    string GetCssCell()
     {
-        if (Status > StatusCell.Empty)
-            await OnCallbackParentRightClick.InvokeAsync((X, Y));
+        string res = classCss;
+        if (!IsBase)
+            res += $" {hoverClassCss}";
+        return res;
     }
 
-    async Task OnClickedCell()
+    async Task HandleRightClick()
     {
-        await OnCallbackParent.InvokeAsync((X, Y));
+        await OnCallbackParentRightClick.InvokeAsync((X, Y));
+    }
+
+    async Task OnClickedCell(MouseEventArgs e)
+    {
+        if (e.Button == (long)MouseButton.Middle && Status > StatusCell.Empty)
+            await OnCallbackParentMiddleCLick.InvokeAsync((X, Y));
+        else
+            await OnCallbackParent.InvokeAsync((X, Y));
     }
 
     protected override void OnParametersSet()

@@ -13,5 +13,9 @@
         public int Index { get; set; }
 
         public List<int> Grid { get; set; } = new List<int>();
+
+        public int Seconds { get; set; }
+
+        public bool Done { get; set; }
     }
 }
