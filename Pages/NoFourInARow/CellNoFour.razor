@@ -1,20 +1,18 @@
 ﻿<Card @onclick="OnClickedCell" Class="@GetCssCell()" Style="@cardCss" @oncontextmenu="(() => HandleRightClick())" @onmouseup="OnClickedCell">
-    @if (Status > StatusCell.Empty)
-    {
-        <Image Source="@currentIcon" Style="width: 30px; height: 30px;" />
-    }
+    <CardImage Source="@currentIcon" Style="padding:10%" />
 </Card>
 
 @code {
 
     const int widthCss = 50;
     const int heightCss = 50;
-    string cardCss = $"background-color: #f7f9fc;border: 1px solid #000000; width: {widthCss}px; height: {heightCss}px; padding-left: 9px !important; padding-top: 9px;";
+    string cardCss = $"background-color: #f7f9fc;border: 1px solid #000000; margin-bottom:0px";
     string hoverClassCss = "card-base";
 
     const string circleIcon = "images/Circle.png";
     const string crossIcon = "images/Cross.png";
-    string currentIcon;
+    const string videIcon = "images/Vide.png";
+    string currentIcon = videIcon;
 
     string classCss = "display-products";
 
@@ -79,7 +77,7 @@
                     currentIcon = circleIcon;
                     break;
                 default:
-                    currentIcon = string.Empty;
+                    currentIcon = videIcon;
                     break;
             }
 

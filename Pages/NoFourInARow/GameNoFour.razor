@@ -50,18 +50,19 @@
 }
 else
 {
-    <Row onselectstart="return false">
-        <Column ColumnSize="ColumnSize.Is6.Is5.WithOffset">
+  // ColumnSize="ColumnSize.Is11.Is1.WithOffset.OnMobile.Is3.WithOffset.OnTablet.Is5.WithOffset.OnDesktop"
+  <Row onselectstart="return false" Style="padding-left:10%;padding-right:10%">
+    <Column ColumnSize="ColumnSize.Is11.OnMobile.Is4.OnDesktop.Is1.WithOffset.OnMobile.Is4.WithOffset.OnDesktop">
             @for (int w = 0; w < fileConfig.Width; w += 1)
             {
                 int wIndex = w;
-                <Row @oncontextmenu:preventDefault="true">
+        <CardGroup @oncontextmenu:preventDefault="true" Style="display: flex; display: -ms-flex-flow;">
                     @for (int h = 0; h < fileConfig.Height; h += 1)
                     {
                         int hIndex = h;
                         <CellNoFour IsBase="Cells[hIndex, wIndex].IsBase" OnCallbackParent="@((args) => OnClickedCell(args.Item1, args.Item2))" OnCallbackParentMiddleCLick="@((args) => OnClickedEraseCell(args.Item1, args.Item2))" OnCallbackParentRightClick="@((args) => OnMiddleClickedCell(args.Item1, args.Item2))" X="wIndex" Y="hIndex" IsInError="Cells[hIndex, wIndex].IsInError" Status="Cells[hIndex, wIndex].Status" />
                     }
-                </Row>
+                </CardGroup>
             }
         </Column>
     </Row>
