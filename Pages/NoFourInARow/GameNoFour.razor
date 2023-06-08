@@ -36,6 +36,7 @@
     <Column ColumnSize="ColumnSize.Is6">
         <Button Color="Color.Secondary" Clicked="GetBack">Get back</Button>
         <Button Color="Color.Primary" Clicked="ResetGrid">Reset</Button>
+        @*<Button Color="Color.Info" Clicked="NextLevel">Next Level</Button>*@
         @*<Button Color="Color.Primary" Clicked="ShowModal">Win</Button>*@
     </Column>
 </Row>
@@ -292,6 +293,12 @@ else
     void GetBack()
     {
         UriHelper.NavigateTo($"/nofour/level/{(int)Difficulty}");
+    }
+
+    void NextLevel()
+    {
+        UriHelper.NavigateTo($"/nofour/game/{(int)Difficulty}/{Index + 1}");
+        StateHasChanged();
     }
 
     void ResetGrid()

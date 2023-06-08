@@ -14,7 +14,8 @@
         Standard,
         Hard,
         Advanced,
-        Expert
+        Expert,
+        Laborious
     }
 
     public static class ExtensionsEnum
@@ -28,6 +29,7 @@
                 Difficulty.Hard => "hard",
                 Difficulty.Advanced => "advanced",
                 Difficulty.Expert => "expert",
+                Difficulty.Laborious => "laborious",
                 _ => "novice",
             };
         }
