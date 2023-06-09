@@ -7,7 +7,15 @@
         Circle
     }
 
-    public enum Difficulty
+    public enum ActionStatusCell
+    {
+      Nothing,
+      Cross,
+      Circle,
+      Erease
+    }
+
+  public enum Difficulty
     {
         Novice = 1,
         Easy,

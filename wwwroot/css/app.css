@@ -80,3 +80,12 @@ a, .btn-link {
 .card-base:hover {
     background-color: yellow !important;
 }
+
+.row.onlyOnSmallScreen {
+  display: none;
+}
+@media screen and (max-width: 800px) {
+  .row.onlyOnSmallScreen {
+    display: flex;
+  }
+}
