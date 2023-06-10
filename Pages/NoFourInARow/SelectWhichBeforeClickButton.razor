@@ -1,61 +1,64 @@
-﻿<Row Class="@GetCssCellComponent()">
-  <Column ColumnSize="ColumnSize.Is3.OnMobile.Is1.OnDesktop">
-    <Div @onclick="@((args) => OnClickedCellCross())" Border="@GetCssCell(ActionStatusCell.Cross)">
-      <CellNoFour IsBase="true" Status=" StatusCell.Cross" />
-    </Div>
-  </Column>
-  <Column ColumnSize="ColumnSize.Is3.OnMobile.Is1.OnDesktop">
-    <Div @onclick="@((args) => OnClickedCellCircle())" Border="@GetCssCell(ActionStatusCell.Circle)">
-      <CellNoFour IsBase="true" Status="StatusCell.Circle" />
-    </Div>
-  </Column>
-  <Column ColumnSize="ColumnSize.Is3.OnMobile.Is1.OnDesktop">
-    <Div @onclick="@((args) => OnClickedCellErease())" Border="@GetCssCell(ActionStatusCell.Erease)">
-      <CellNoFour IsBase="true" Status="StatusCell.Empty" />
-    </Div>
-  </Column>
+﻿<Row>
+    <Column ColumnSize="ColumnSize.Is3.WithOffset">
+        <Row Class="@GetCssCellComponent()">
+            <Column ColumnSize="ColumnSize.Is2.OnMobile.Is1.OnDesktop">
+                <Div @onclick="@((args) => OnClickedCellCross())" Border="@GetCssCell(ActionStatusCell.Cross)">
+                    <CellNoFour IsBase="true" Status=" StatusCell.Cross" />
+                </Div>
+            </Column>
+            <Column ColumnSize="ColumnSize.Is2.OnMobile.Is1.OnDesktop">
+                <Div @onclick="@((args) => OnClickedCellCircle())" Border="@GetCssCell(ActionStatusCell.Circle)">
+                    <CellNoFour IsBase="true" Status="StatusCell.Circle" />
+                </Div>
+            </Column>
+            <Column ColumnSize="ColumnSize.Is2.OnMobile.Is1.OnDesktop">
+                <Div @onclick="@((args) => OnClickedCellErease())" Border="@GetCssCell(ActionStatusCell.Erease)">
+                    <CellNoFour IsBase="true" Status="StatusCell.Empty" />
+                </Div>
+            </Column>
+        </Row>
+    </Column>
 </Row>
-
 @code {
-  [Parameter]
-  public EventCallback<ActionStatusCell> OnCallbackParent { get; set; }
+    [Parameter]
+    public EventCallback<ActionStatusCell> OnCallbackParent { get; set; }
 
-  [Parameter]
-  public ActionStatusCell ActionStatusRequested { get; set; }
+    [Parameter]
+    public ActionStatusCell ActionStatusRequested { get; set; }
 
-  [Parameter]
-  public string CssClass { get; set; }
+    [Parameter]
+    public string CssClass { get; set; }
 
-  string GetCssCellComponent()
-  {
-    return CssClass;
-  }
-
-  IFluentBorder GetCssCell(ActionStatusCell actionStatusCell)
-  {
-    if (ActionStatusRequested == actionStatusCell)
+    string GetCssCellComponent()
     {
-      return Border.Is5.Rounded.Primary;
+        return CssClass;
     }
 
-    return Border.Is0;
-  }
+    IFluentBorder GetCssCell(ActionStatusCell actionStatusCell)
+    {
+        if (ActionStatusRequested == actionStatusCell)
+        {
+            return Border.Is5.Rounded.Primary;
+        }
 
-  async Task OnClickedCellCross()
-  {
-    ActionStatusRequested = ActionStatusCell.Cross;
-    await OnCallbackParent.InvokeAsync((ActionStatusRequested));
-  }
+        return Border.Is0;
+    }
 
-  async Task OnClickedCellCircle()
-  {
-    ActionStatusRequested = ActionStatusCell.Circle;
-    await OnCallbackParent.InvokeAsync((ActionStatusRequested));
-  }
+    async Task OnClickedCellCross()
+    {
+        ActionStatusRequested = ActionStatusCell.Cross;
+        await OnCallbackParent.InvokeAsync((ActionStatusRequested));
+    }
 
-  async Task OnClickedCellErease()
-  {
-    ActionStatusRequested = ActionStatusCell.Erease;
-    await OnCallbackParent.InvokeAsync((ActionStatusRequested));
-  }
+    async Task OnClickedCellCircle()
+    {
+        ActionStatusRequested = ActionStatusCell.Circle;
+        await OnCallbackParent.InvokeAsync((ActionStatusRequested));
+    }
+
+    async Task OnClickedCellErease()
+    {
+        ActionStatusRequested = ActionStatusCell.Erease;
+        await OnCallbackParent.InvokeAsync((ActionStatusRequested));
+    }
 }

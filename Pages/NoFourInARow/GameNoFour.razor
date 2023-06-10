@@ -33,7 +33,7 @@
 
 <br />
 <Row>
-  <Column ColumnSize="ColumnSize.Is6">
+  <Column>
     <Button Color="Color.Secondary" Clicked="GetBack">Get back</Button>
     <Button Color="Color.Primary" Clicked="ResetGrid">Reset</Button>
     <Button Color="Color.Info" Clicked="NextLevel">Next Level</Button>
@@ -51,7 +51,7 @@
 else
 {
   <Row onselectstart="return false" Style="padding-left:10%;padding-right:10%">
-    <Column ColumnSize="ColumnSize.Is11.OnMobile.Is4.OnDesktop.Is1.WithOffset.OnMobile.Is4.WithOffset.OnDesktop">
+    <Column ColumnSize="ColumnSize.Is10.OnMobile.Is4.OnDesktop.Is1.WithOffset.OnMobile.Is4.WithOffset.OnDesktop">
       @for (int w = 0; w < fileConfig.Width; w += 1)
       {
         int wIndex = w;
@@ -145,7 +145,7 @@ else
     StatusCell startStatusCell = startCell.Status;
     for (int yParcours = y - 1, xParcours = x + 1; yParcours > y - 4 && xParcours < x + 4; yParcours -= 1, xParcours += 1)
     {
-      if (yParcours <= 0 || xParcours >= fileConfig.Width || Cells[yParcours, xParcours].Status != startStatusCell)
+      if (yParcours < 0 || xParcours >= fileConfig.Width || Cells[yParcours, xParcours].Status != startStatusCell)
         return false;
     }
 

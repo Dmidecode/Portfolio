@@ -58,9 +58,11 @@
 
     async Task OnClickedCell(MouseEventArgs e)
     {
-        if (e.Button == (long)MouseButton.Middle && Status > StatusCell.Empty)
+        if (e.Button == (long)MouseButton.Right)
+            await OnCallbackParentRightClick.InvokeAsync((X, Y));
+        else if (e.Button == (long)MouseButton.Middle && Status > StatusCell.Empty)
             await OnCallbackParentMiddleCLick.InvokeAsync((X, Y));
-        else
+        else if (e.Button == (long)MouseButton.Left)
             await OnCallbackParent.InvokeAsync((X, Y));
     }
 
