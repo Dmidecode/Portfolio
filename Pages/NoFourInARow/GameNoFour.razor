@@ -70,7 +70,7 @@ else
   <SelectWhichBeforeClickButton CssClass="onlyOnSmallScreen" OnCallbackParent="@((args) => OnClickedCellFromSelectWhichBefore(args))" />
 }
 
-<Modal @ref="modalWin">
+<Modal @ref="modalWin" @oncontextmenu:preventDefault="true">
   <ModalContent Centered>
     <ModalHeader>
       <ModalTitle>Congratulations !</ModalTitle>
