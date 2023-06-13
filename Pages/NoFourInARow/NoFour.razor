@@ -2,14 +2,28 @@
 
 @inject NavigationManager UriHelper
 
-<DifficultyNoFour />
-<br />
-<br />
-<ReglesNoFour />
+<Accordion>
+    <Collapse Visible="false">
+        <CollapseHeader>
+            <Heading Size="HeadingSize.Is5">
+                <AccordionToggle>Rules</AccordionToggle>
+            </Heading>
+        </CollapseHeader>
+        <CollapseBody>
+            <ReglesNoFour />
+        </CollapseBody>
+    </Collapse>
+    <Collapse Visible="true">
+        <CollapseHeader>
+            <Heading Size="HeadingSize.Is5">
+                <AccordionToggle>Difficulty</AccordionToggle>
+            </Heading>
+        </CollapseHeader>
+        <CollapseBody>
+            <DifficultyNoFour />
+        </CollapseBody>
+    </Collapse>
+</Accordion>
 
 @code {
-    void OnRulesClicked()
-    {
-        UriHelper.NavigateTo("/nofour/rules");
-    }
 }

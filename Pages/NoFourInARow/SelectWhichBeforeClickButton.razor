@@ -61,4 +61,10 @@
         ActionStatusRequested = ActionStatusCell.Erease;
         await OnCallbackParent.InvokeAsync((ActionStatusRequested));
     }
+
+    protected override Task OnInitializedAsync()
+    {
+        ActionStatusRequested = ActionStatusCell.Cross;
+        return Task.CompletedTask;
+    }
 }
