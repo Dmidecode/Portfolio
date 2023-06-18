@@ -58,11 +58,14 @@ namespace Portfolio.Pages.NoFourInARow
             grid.Index = Index;
             grid.Seconds = time;
             gridsStorage.Grids.Add(grid);
+
             await _localstorage.SetItemAsync<GridsDoneStorage>($"grid{Difficulty.GetDifficultyPath()}", gridsStorage);
 
-            await SendScore(grid);
+            var taskScore = SendScore(grid);
+            await modalWin.Show();
+            await taskScore;
 
-            return modalWin.Show();
+            return Task.CompletedTask;
         }
 
         async Task SendScore(GridDoneStorage grid)

@@ -14,29 +14,48 @@
     {
         @foreach (var grid in fileConfig.Grids)
         {
-            <Card Margin="Margin.Is4.FromBottom">
-                <CardBody>
-                    <CardTitle Size="5">Level @grid.Index</CardTitle>
-                    <CardText>
-                        @{
-                            List<LeaderboardData> datas = new List<LeaderboardData>();
-                            if (leaderboard.Data.ContainsKey(grid.Index))
-                                datas = leaderboard.Data[grid.Index];
-                            if (datas == null || datas.Count <= 0)
-                            {
-                                <Text>Nobody played this level yet</Text>
-                            }
-                            else
-                            {
-                                foreach (var player in datas.OrderBy(x => x.Seconds))
+            <Column ColumnSize="ColumnSize.Is2">
+                <Card Margin="Margin.Is4.FromBottom">
+                    <CardBody>
+                        <CardTitle Size="5" TextAlignment="TextAlignment.Center">Level @grid.Index</CardTitle>
+                        <CardText Margin="Margin.Is4.FromTop">
+                            @{
+                                List<LeaderboardData> datas = new List<LeaderboardData>();
+                                if (leaderboard.Data.ContainsKey(grid.Index))
+                                    datas = leaderboard.Data[grid.Index];
+                                if (datas == null || datas.Count <= 0)
                                 {
-                                    <Text>@player.Name: @($"{player.Seconds / 60:00}:{player.Seconds % 60:00}")</Text>
+                                    <Paragraph Italic>Nobody played this level yet</Paragraph>
+                                }
+                                else
+                                {
+                                    int i = 1;
+                                    foreach (var player in datas.OrderBy(x => x.Seconds).Take(3))
+                                    {
+                                        int index = i;
+                                        <Paragraph>
+                                            <Div Flex="Flex.JustifyContent.Around">
+                                                <Text>
+                                                    Top @index
+                                                </Text>
+                                                <Text TextColor="@(index == 1 ? TextColor.Success : index == 2 ? TextColor.Warning : TextColor.Info)" TextWeight="TextWeight.Bold" >
+                                                    <Text TextTransform="TextTransform.Capitalize">
+                                                        @player.Name: 
+                                                    </Text>
+                                                    <Text>
+                                                        @($"{player.Seconds / 60:00}:{player.Seconds % 60:00}")
+                                                    </Text>
+                                                </Text>
+                                            </Div>
+                                        </Paragraph>
+                                        i += 1;
+                                    }
                                 }
                             }
-                        }
-                    </CardText>
-                </CardBody>
-            </Card>
+                        </CardText>
+                    </CardBody>
+                </Card>
+            </Column>
         }
     }
 </Row>

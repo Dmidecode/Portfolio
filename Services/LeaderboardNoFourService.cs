@@ -23,7 +23,16 @@ namespace Portfolio.Services
 
         public async Task<TValue?> GetFromJsonAsync<TValue>(string requestURI)
         {
-            return await this._httpClient.GetFromJsonAsync<TValue>(requestURI);
+            try
+            {
+                return await this._httpClient.GetFromJsonAsync<TValue>(requestURI);
+            }
+            catch (Exception ex)
+            {
+                await Console.Out.WriteLineAsync("Touit");
+            }
+
+            return default(TValue);
         }
 
         public async Task<HttpResponseMessage> PostAsJsonAsync<TValue>(string requestURI, TValue value)
