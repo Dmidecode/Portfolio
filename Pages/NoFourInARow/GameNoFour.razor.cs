@@ -1,6 +1,10 @@
 ﻿using Blazorise;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Authorization;
+using Portfolio.Interfaces;
 using Portfolio.Models;
+using Portfolio.Models.Aws;
+using Portfolio.Services;
 using System.Net.Http.Json;
 using System.Timers;
 
@@ -16,6 +20,12 @@ namespace Portfolio.Pages.NoFourInARow
 
         [Parameter]
         public CellModel[,] Cells { get; set; }
+
+        [CascadingParameter]
+        private Task<AuthenticationState> authenticationStateTask { get; set; }
+
+        [Inject]
+        public ILeaderboardNoFourService LeaderboardNoFourService { get; set; }
 
         Difficulty Difficulty;
         FileConfigNoFourInARow fileConfig;
@@ -39,14 +49,45 @@ namespace Portfolio.Pages.NoFourInARow
                 gridsStorage = new GridsDoneStorage();
 
             var grid = gridsStorage.Grids.FirstOrDefault(x => x.Index == Index);
+            int time = finish.Minutes * 60 + finish.Seconds;
             if (grid == null)
                 grid = new();
+            else if (grid.Seconds < time)
+                return modalWin.Show();
 
             grid.Index = Index;
-            grid.Seconds = finish.Minutes * 60 + finish.Seconds;
+            grid.Seconds = time;
             gridsStorage.Grids.Add(grid);
             await _localstorage.SetItemAsync<GridsDoneStorage>($"grid{Difficulty.GetDifficultyPath()}", gridsStorage);
+
+            await SendScore(grid);
+
             return modalWin.Show();
+        }
+
+        async Task SendScore(GridDoneStorage grid)
+        {
+            var user = (await authenticationStateTask).User;
+            if (!user.Identity.IsAuthenticated)
+                return;
+
+            string username = user.Claims.FirstOrDefault(x => x.Type == "nickname")?.Value;
+            LeaderboardSaveRequest contentRequest = new()
+            {
+                Difficulty = (int)Difficulty,
+                Level = grid.Index,
+                Name = username,
+                Seconds = grid.Seconds
+            };
+
+            try
+            {
+                var response = await LeaderboardNoFourService.PostAsJsonAsync("/leaderboardsave", contentRequest);
+            }
+            catch (Exception ex)
+            {
+                await Console.Out.WriteLineAsync("Un problème dans l'envoi du score");
+            }
         }
 
         void ResetErrorGrid()
@@ -62,7 +103,7 @@ namespace Portfolio.Pages.NoFourInARow
 
         bool CheckDiagonalLeft(int y, int x)
         {
-            if (y - 3 < 0 || x + 3 > fileConfig.Width)
+            if (y - 3 < 0 || x + 3 > fileConfig.Width || Cells == null)
                 return false;
 
             CellModel startCell = Cells[y, x];
@@ -81,7 +122,7 @@ namespace Portfolio.Pages.NoFourInARow
 
         bool CheckDiagonalRight(int y, int x)
         {
-            if (y + 3 > fileConfig.Height || x + 3 > fileConfig.Width)
+            if (y + 3 > fileConfig.Height || x + 3 > fileConfig.Width || Cells == null)
                 return false;
 
             CellModel startCell = Cells[y, x];
@@ -100,7 +141,7 @@ namespace Portfolio.Pages.NoFourInARow
 
         bool CheckHorizontal(int y, int x)
         {
-            if (y + 3 > fileConfig.Height)
+            if (y + 3 > fileConfig.Height || Cells == null)
                 return false;
 
             CellModel startCell = Cells[y, x];
@@ -119,7 +160,7 @@ namespace Portfolio.Pages.NoFourInARow
 
         bool CheckVertical(int y, int x)
         {
-            if (x + 3 > fileConfig.Width)
+            if (x + 3 > fileConfig.Width || Cells == null)
                 return false;
 
             CellModel startCell = Cells[y, x];

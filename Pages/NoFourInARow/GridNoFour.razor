@@ -191,7 +191,7 @@
 
     void CheckDiagonalLeft(int y, int x)
     {
-        if (y - 3 < 0 || x + 3 > Width)
+        if (y - 3 < 0 || x + 3 > Width || Cells == null)
             return;
 
         CellModel startCell = Cells[y, x];
@@ -210,7 +210,7 @@
 
     void CheckDiagonalRight(int y, int x)
     {
-        if (y + 3 > Height || x + 3 > Width)
+        if (y + 3 > Height || x + 3 > Width || Cells == null)
             return;
 
         CellModel startCell = Cells[y, x];
@@ -229,7 +229,7 @@
 
     void CheckHorizontal(int y, int x)
     {
-        if (y + 3 > Height)
+        if (y + 3 > Height || Cells == null)
             return;
 
         CellModel startCell = Cells[y, x];
@@ -248,7 +248,7 @@
 
     void CheckVertical(int y, int x)
     {
-        if (x + 3 > Width)
+        if (x + 3 > Width || Cells == null)
             return;
 
         CellModel startCell = Cells[y, x];

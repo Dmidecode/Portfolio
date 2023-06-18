@@ -1,7 +1,14 @@
 ﻿@page "/nofour/difficulty"
+@inject NavigationManager NavManager
 
-@*<Heading Size="HeadingSize.Is2">Choose your difficulty</Heading>*@
-
+<Row>
+    <Button Color="Color.Primary" TextColor="TextColor.White" Clicked="RedirectLeaderboard">
+        <Span>
+            <Icon Name="IconName.Star" Margin="Margin.Is3.FromEnd"/>
+            Leaderboard
+        </Span>
+    </Button>
+</Row>
 <br />
 <br />
 <Row>
@@ -101,4 +108,8 @@
 
 
 @code {
+    private void RedirectLeaderboard()
+    {
+        NavManager.NavigateTo("/nofour/leaderboard");
+    }
 }

@@ -1,4 +1,7 @@
 ﻿@page "/"
+@using Microsoft.AspNetCore.Components.Authorization
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+@using System.Security.Claims;
 
 <PageTitle>Home Sweet Home</PageTitle>
 <Heading Size="HeadingSize.Is2" Margin="Margin.Is4.OnY">
@@ -42,6 +45,9 @@
         return Task.CompletedTask;
     }
 
-    [CascadingParameter] Theme Theme { get; set; 
+    [CascadingParameter]
+    Theme Theme
+    {
+        get; set;
+    }
 }
-                            }

@@ -1,0 +1,99 @@
+﻿@page "/nofour/leaderboard"
+
+<Row>
+    <Column>
+        <Breadcrumb Class="breadcrumb-custom">
+            <BreadcrumbItem>
+                <BreadcrumbLink To="/nofour/">Difficulty</BreadcrumbLink>
+            </BreadcrumbItem>
+            <BreadcrumbItem Active>
+                <BreadcrumbLink To="#">Leaderboard</BreadcrumbLink>
+            </BreadcrumbItem>
+        </Breadcrumb>
+    </Column>
+</Row>
+
+<Row>
+    <Column ColumnSize="ColumnSize.Is10">
+        <Heading Size="HeadingSize.Is2">Leaderboard</Heading>
+    </Column>
+</Row>
+
+<br />
+
+
+<Accordion>
+    <Collapse Visible="false">
+        <CollapseHeader>
+            <Heading Size="HeadingSize.Is5">
+                <AccordionToggle>Novice</AccordionToggle>
+            </Heading>
+        </CollapseHeader>
+        <CollapseBody>
+            <LeaderboardDifficulty DifficultyParameter="1" />
+        </CollapseBody>
+    </Collapse>
+    <Collapse Visible="false">
+        <CollapseHeader>
+            <Heading Size="HeadingSize.Is5">
+                <AccordionToggle>Easy</AccordionToggle>
+            </Heading>
+        </CollapseHeader>
+        <CollapseBody>
+            <LeaderboardDifficulty DifficultyParameter="2" />
+        </CollapseBody>
+    </Collapse>
+    <Collapse Visible="false">
+        <CollapseHeader>
+            <Heading Size="HeadingSize.Is5">
+                <AccordionToggle>Standard</AccordionToggle>
+            </Heading>
+        </CollapseHeader>
+        <CollapseBody>
+            <LeaderboardDifficulty DifficultyParameter="3" />
+        </CollapseBody>
+    </Collapse>
+    <Collapse Visible="false">
+        <CollapseHeader>
+            <Heading Size="HeadingSize.Is5">
+                <AccordionToggle>Hard</AccordionToggle>
+            </Heading>
+        </CollapseHeader>
+        <CollapseBody>
+            <LeaderboardDifficulty DifficultyParameter="4" />
+        </CollapseBody>
+    </Collapse>
+    <Collapse Visible="false">
+        <CollapseHeader>
+            <Heading Size="HeadingSize.Is5">
+                <AccordionToggle>Advanced</AccordionToggle>
+            </Heading>
+        </CollapseHeader>
+        <CollapseBody>
+            <LeaderboardDifficulty DifficultyParameter="5" />
+        </CollapseBody>
+    </Collapse>
+    <Collapse Visible="false">
+        <CollapseHeader>
+            <Heading Size="HeadingSize.Is5">
+                <AccordionToggle>Expert</AccordionToggle>
+            </Heading>
+        </CollapseHeader>
+        <CollapseBody>
+            <LeaderboardDifficulty DifficultyParameter="6" />
+        </CollapseBody>
+    </Collapse>
+    <Collapse Visible="false">
+        <CollapseHeader>
+            <Heading Size="HeadingSize.Is5">
+                <AccordionToggle>Laborious</AccordionToggle>
+            </Heading>
+        </CollapseHeader>
+        <CollapseBody>
+            <LeaderboardDifficulty DifficultyParameter="7" />
+        </CollapseBody>
+    </Collapse>
+</Accordion>
+
+@code {
+}

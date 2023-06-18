@@ -1,0 +1,67 @@
+﻿@using Portfolio.Interfaces;
+@using Portfolio.Models.Aws;
+@inject ILeaderboardNoFourService LeaderboardNoFourService
+@inject HttpClient Http
+
+<Row>
+    @if (fileConfig == null || fileConfig.Grids == null || leaderboard == null || leaderboard.Data == null)
+    {
+        <Div Display="Display.InlineBlock">
+            <SpinKit Type="SpinKitType.Chase" />
+        </Div>
+    }
+    else
+    {
+        @foreach (var grid in fileConfig.Grids)
+        {
+            <Card Margin="Margin.Is4.FromBottom">
+                <CardBody>
+                    <CardTitle Size="5">Level @grid.Index</CardTitle>
+                    <CardText>
+                        @{
+                            List<LeaderboardData> datas = new List<LeaderboardData>();
+                            if (leaderboard.Data.ContainsKey(grid.Index))
+                                datas = leaderboard.Data[grid.Index];
+                            if (datas == null || datas.Count <= 0)
+                            {
+                                <Text>Nobody played this level yet</Text>
+                            }
+                            else
+                            {
+                                foreach (var player in datas.OrderBy(x => x.Seconds))
+                                {
+                                    <Text>@player.Name: @($"{player.Seconds / 60:00}:{player.Seconds % 60:00}")</Text>
+                                }
+                            }
+                        }
+                    </CardText>
+                </CardBody>
+            </Card>
+        }
+    }
+</Row>
+
+@code {
+    [Parameter]
+    public int DifficultyParameter { get; set; }
+
+    Difficulty Difficulty;
+    FileConfigNoFourInARow fileConfig;
+    LeaderboardGet leaderboard;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await Load();
+            StateHasChanged();
+        }
+    }
+
+    async Task Load()
+    {
+        string resFile = $"nofourinarow/{Difficulty.GetDifficultyPath()}/grids.json";
+        leaderboard = await LeaderboardNoFourService.GetFromJsonAsync<LeaderboardGet>($"/leaderboard/{DifficultyParameter}");
+        fileConfig = await Http.GetFromJsonAsync<FileConfigNoFourInARow>(resFile);
+    }
+}

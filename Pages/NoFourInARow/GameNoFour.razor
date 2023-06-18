@@ -1,14 +1,18 @@
 ﻿@page "/nofour/game/{difficultyParameter:int}/{index:int}"
 @using System.Timers;
+@using Portfolio.Services;
 @inject NavigationManager UriHelper
 @inject HttpClient Http
-@inject ILocalStorageService _localstorage;
+@inject ILocalStorageService _localstorage
 
+@*@inject Configuration Configuration
+<Heading>Url: @Configuration.UrlApiGateway</Heading>
+*@
 <Row>
     <Column>
         <Breadcrumb Class="breadcrumb-custom">
             <BreadcrumbItem>
-                <BreadcrumbLink To="/nofour/difficulty">Difficulty</BreadcrumbLink>
+                <BreadcrumbLink To="/nofour/">Difficulty</BreadcrumbLink>
             </BreadcrumbItem>
             <BreadcrumbItem>
                 <BreadcrumbLink To="@($"/nofour/level/{(int)Difficulty}")">Level</BreadcrumbLink>
@@ -36,6 +40,7 @@
     <Button Color="Color.Secondary" Clicked="GetBack" Margin="Margin.Is1">Get back</Button>
     <Button Color="Color.Primary" Clicked="ResetGrid" Margin="Margin.Is1">Reset</Button>
     <Button Color="Color.Info" Clicked="NextLevel" Margin="Margin.Is1">Next Level</Button>
+    @*<Button Color="Color.Warning" Clicked="SendScoreClick" Margin="Margin.Is1">Send Score Test</Button>*@
 </Div>
 <br />
 

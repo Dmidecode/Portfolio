@@ -1,4 +1,5 @@
 ﻿<Blazorise.ThemeProvider Theme="@theme">
+    <CascadingAuthenticationState>
     <Router AppAssembly="@typeof(App).Assembly">
         <Found Context="routeData">
             <RouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)" />
@@ -10,7 +11,8 @@
                 <p role="alert">Sorry, there's nothing at this address.</p>
             </LayoutView>
         </NotFound>
-    </Router>
+        </Router>
+    </CascadingAuthenticationState>
 </Blazorise.ThemeProvider>
 
 @code {
