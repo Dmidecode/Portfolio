@@ -7,7 +7,7 @@
 
 <AuthorizeView>
     <Authorized>
-        Hello @context.User.Claims.FirstOrDefault(x => x.Type == "nickname")?.Value !
+        <Text>Hello <Text TextTransform="TextTransform.Capitalize">@context.User.Claims.FirstOrDefault(x => x.Type == "username")?.Value</Text> !</Text>
 
         <button class="nav-link btn btn-link" @onclick="BeginSignOut">Log out</button>
     </Authorized>
