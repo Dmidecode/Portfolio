@@ -9,10 +9,17 @@
     <Authorized>
         <Text>Hello <Text TextTransform="TextTransform.Capitalize">@context.User.Claims.FirstOrDefault(x => x.Type == "username")?.Value</Text> !</Text>
 
-        <button class="nav-link btn btn-link" @onclick="BeginSignOut">Log out</button>
+        <Button Clicked="BeginSignOut">Log out</Button>
+        @*<button class="nav-link btn btn-link" @onclick="BeginSignOut">Log out</button>*@
     </Authorized>
     <NotAuthorized>
-        <a href="authentication/login">Log in</a>
+        <NavLink class="nav-link" href="authentication/login">
+            <Span>
+                <Icon Name="IconName.Key" Margin="Margin.Is3.FromEnd" />
+                Log in
+            </Span>
+        </NavLink>
+        @*<a href="authentication/login">Log in</a>*@
     </NotAuthorized>
 </AuthorizeView>
 

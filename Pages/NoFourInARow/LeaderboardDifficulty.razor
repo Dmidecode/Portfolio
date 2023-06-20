@@ -14,18 +14,18 @@
     {
         @foreach (var grid in fileConfig.Grids)
         {
-            <Column ColumnSize="ColumnSize.Is2">
+            <Column ColumnSize="ColumnSize.Is12.OnMobile.Is2.OnDesktop">
                 <Card Margin="Margin.Is4.FromBottom">
                     <CardBody>
                         <CardTitle Size="5" TextAlignment="TextAlignment.Center">Level @grid.Index</CardTitle>
-                        <CardText Margin="Margin.Is4.FromTop">
+                        <CardText Margin="Margin.Is4.FromTop" TextAlignment="TextAlignment.Center">
                             @{
                                 List<LeaderboardData> datas = new List<LeaderboardData>();
                                 if (leaderboard.Data.ContainsKey(grid.Index))
                                     datas = leaderboard.Data[grid.Index];
                                 if (datas == null || datas.Count <= 0)
                                 {
-                                    <Paragraph Italic>Nobody played this level yet</Paragraph>
+                                    <Paragraph Italic>N/A</Paragraph>
                                 }
                                 else
                                 {
@@ -75,6 +75,12 @@
             await Load();
             StateHasChanged();
         }
+    }
+
+
+    protected override void OnParametersSet()
+    {
+        Difficulty = (Difficulty)DifficultyParameter;
     }
 
     async Task Load()
