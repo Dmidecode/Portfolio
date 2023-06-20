@@ -1,4 +1,5 @@
 ﻿@page "/nofour/level/{difficultyParameter:int}"
+@using Portfolio.Interfaces;
 @inject HttpClient Http
 @inject ILocalStorageService _localstorage;
 
@@ -19,9 +20,10 @@
     <Column ColumnSize="ColumnSize.Is10">
         <Heading Size="HeadingSize.Is2">Choose your level</Heading>
     </Column>
-    <Column>
+@*    <Column>
         <Button Color="Color.Danger" Size="Size.Small" Clicked="EraseProgress">Erase your progress</Button>
     </Column>
+*@
 </Row>
 
 <br />
@@ -63,6 +65,12 @@
     [Parameter]
     public int DifficultyParameter { get; set; }
 
+    [CascadingParameter]
+    private Task<AuthenticationState> authenticationStateTask { get; set; }
+
+    [Inject]
+    public ILeaderboardNoFourService LeaderboardNoFourService { get; set; }
+
     Difficulty Difficulty;
     FileConfigNoFourInARow fileConfig;
 
@@ -101,10 +109,24 @@
 
     async Task LoadSave()
     {
+        GridsDoneStorage gridsStorage = new();
+        var user = (await authenticationStateTask).User;
         string resFile = $"nofourinarow/{Difficulty.GetDifficultyPath()}/grids.json";
         fileConfig = await Http.GetFromJsonAsync<FileConfigNoFourInARow>(resFile);
+        if (!user.Identity.IsAuthenticated)
+        {
+            gridsStorage = await _localstorage.GetItemAsync<GridsDoneStorage>($"grid{Difficulty.GetDifficultyPath()}");
+        }
+        else
+        {
+            string username = user.Claims.FirstOrDefault(x => x.Type == "username")?.Value;
+            var serviceData = await LeaderboardNoFourService.GetFromJsonAsync<Dictionary<int, int>>($"/playerStat/{(int)Difficulty}/{username}");
+            foreach (var data in serviceData)
+            {
+                gridsStorage.Grids.Add(new() { Index = data.Key, Seconds = data.Value });
+            }
+        }
 
-        GridsDoneStorage gridsStorage = await _localstorage.GetItemAsync<GridsDoneStorage>($"grid{Difficulty.GetDifficultyPath()}");
 
         if (gridsStorage == null)
             return;

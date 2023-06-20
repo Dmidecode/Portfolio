@@ -59,11 +59,20 @@ namespace Portfolio.Pages.NoFourInARow
             grid.Seconds = time;
             gridsStorage.Grids.Add(grid);
 
-            await _localstorage.SetItemAsync<GridsDoneStorage>($"grid{Difficulty.GetDifficultyPath()}", gridsStorage);
+            Task taskScore;
+            var user = (await authenticationStateTask).User;
+            if (!user.Identity.IsAuthenticated)
+            {
+                await _localstorage.SetItemAsync<GridsDoneStorage>($"grid{Difficulty.GetDifficultyPath()}", gridsStorage);
+                await modalWin.Show();
+            }
+            else
+            {
+                taskScore = SendScore(grid);
+                await modalWin.Show();
+                await taskScore;
+            }
 
-            var taskScore = SendScore(grid);
-            await modalWin.Show();
-            await taskScore;
 
             return Task.CompletedTask;
         }
@@ -74,7 +83,7 @@ namespace Portfolio.Pages.NoFourInARow
             if (!user.Identity.IsAuthenticated)
                 return;
 
-            string username = user.Claims.FirstOrDefault(x => x.Type == "nickname")?.Value;
+            string username = user.Claims.FirstOrDefault(x => x.Type == "username")?.Value;
             LeaderboardSaveRequest contentRequest = new()
             {
                 Difficulty = (int)Difficulty,
