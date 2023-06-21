@@ -112,7 +112,7 @@
         GridsDoneStorage gridsStorage = new();
         var user = (await authenticationStateTask).User;
         string resFile = $"nofourinarow/{Difficulty.GetDifficultyPath()}/grids.json";
-        fileConfig = await Http.GetFromJsonAsync<FileConfigNoFourInARow>(resFile);
+        var taskFileConfig = Http.GetFromJsonAsync<FileConfigNoFourInARow>(resFile);
         if (!user.Identity.IsAuthenticated)
         {
             gridsStorage = await _localstorage.GetItemAsync<GridsDoneStorage>($"grid{Difficulty.GetDifficultyPath()}");
@@ -127,6 +127,7 @@
             }
         }
 
+        fileConfig = await taskFileConfig;
 
         if (gridsStorage == null)
             return;
