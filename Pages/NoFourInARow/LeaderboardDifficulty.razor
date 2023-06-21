@@ -86,7 +86,8 @@
     async Task Load()
     {
         string resFile = $"nofourinarow/{Difficulty.GetDifficultyPath()}/grids.json";
-        leaderboard = await LeaderboardNoFourService.GetFromJsonAsync<LeaderboardGet>($"/leaderboard/{DifficultyParameter}");
+        var taskLeaderboard = LeaderboardNoFourService.GetFromJsonAsync<LeaderboardGet>($"/leaderboard/{DifficultyParameter}");
         fileConfig = await Http.GetFromJsonAsync<FileConfigNoFourInARow>(resFile);
+        leaderboard = await taskLeaderboard;
     }
 }
